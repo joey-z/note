@@ -1,0 +1,74 @@
+1.shell编写
+2.执行脚本 
+1）用bash 1shell.sh
+2) (changemod) chmod a+x(a是所有人)（加一个可执行权限）（文件名.sh）
+   ./文件名.sh
+3.每三个 文件所有者 文件所有组 
+4.``命令替换符 命令的输出替换到两个`中间 
+5.变量的定义 
+a=12
+a=helloworld
+a=`pwd`
+a=$a:a
+局部变量
+6.特殊变量
+位置变量
+$0：获取当前shell脚本的文件名包括路径
+$n：获取当前执行脚本的第n个参数,n=1...9,则需要将n使用大括号括起来
+$*:获取当前shell的所有参数，将所有命令参数视为单个字符串，相当于$1$2$3
+$#:得到执行当前脚本的参数个数
+$@:获取这个程序所有参数，并保留参数之间任何空白，相当于”$1“ "$2" "$3",这是将参数传给其他函数的最好办法
+状态变量
+$?:判断上一条指令是否成功  0表示成功 其他任何值都表示不成功
+$$:取当前进程的PID
+$!:上一个指令的PID
+返回2 严重的错误 
+7.变量 参数展开
+echo ${HOME}  echo $HOME 执行效果相同
+{} 大括号是$界限符
+特殊参数含义
+${parameter:？word} 用于捕捉由于变量未定义而导致的错误并退出程序
+${parameter:=word} 如果变量未定义，则设置变量的值为word，返回表达式的值也是Word
+${parameter:+word} 如果变量已经定义，返回Word 也就是真
+${parameter:-word} 如果变量未定义，则表达式的值为Word
+${!prefix*}
+${!prefix@} prefix开头的变量
+字符串展开
+${#parameter} 输出字符串的长度
+${parameter：offset} 从第offset字符开始截取  
+${parameter：offset：length} 从第offset字符开始截取 取length长度
+${parameter#pattern} 从头删除最短匹配
+${parameter##pattern} 最短
+${parameter%pattern} 从尾删除最短
+${parameter%%pattern} 从尾删除最长
+${parameter/pattern/string} 第一个匹配被替换
+${parameter//pattern/string} 全部匹配被替换
+${parameter/#pattern/string} 字符串开头的替换
+${parameter/%pattern/string} 字符串结尾的替换
+${parameter,,} ${parameter^^} 全部转换为小写、大写
+${parameter,,} ${parameter^}  首字母转换为小写、大写
+8.输入输出
+输入
+read [-options] [variable...]
+-a array 把输入赋值到数组array中，从索引号零开始
+-d delimiter #用字符串delimiter中的第一个字符指示输入结束，而不是一个换行符
+-e  #使用ReadLine处理输入，这使得与命令行相同的方式编辑输入
+-n num #读出num个输入字符而不是整行
+-p prompt #为输入显示提示信息，使用字符串prompt
+-r Raw mode 不把反斜杠字符解释为转义字符
+-s #Slient mode
+-t seconds #超时
+-u fd #使用文件描述符fd中的输入，而不是标准输入
+输出
+echo string
+echo "hello $name, this is haizei"
+echo -e "hello"
+echo "\"hello haizei""
+printf format-string [argument...]
+示例 ： printf "hello %s, this is haizei\n" "small A"
+        hello small A, this is haizei
+9.函数使用方式（推荐后两种）
+调用函数 _printf_ "函数名"
+10.流程控制(循环 判断)
+11.数组
+所有的赋值不能加$
