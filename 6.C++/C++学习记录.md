@@ -1,26 +1,132 @@
 ## 从C到C++
 
 - ｆ()和ｆ(void)的区别
+
   - c 　ｆ()可以传n个参数　ｆ(void) 不能传参
   - c++  无区别　都不能传参
 
-- ｃ++是一种强数据类型的语言
-
-- ｃ++是ｃ的超集
+- ｃ++是一种强数据类型的语言，ｃ++是ｃ的超集
 
 - 异常和bug区别
 
 - 编程范式　
-  - 面向过程（随着问题规模的增大）　
-    - 难以维护
-    - 可移植性不好
+
+  - 面向过程（随着问题规模的增大，难以维护，可移植性不好）
   - 面向对象（）
   - 泛型编程
   - 函数式编程
 
 - 运算符里不能重载的只有５个
 
-- ### 类和对象
+- C语言所有变量必须位于函数体的最前面，C++所有变量随用随定义
+
+- C++中提供两种初始化方法：
+
+  1. 复制初始化　`int x = 1024;`(C语言提供的初始化方式)
+  2. 直接初始化`int x (1024);`
+
+  
+
+### 命名空间
+
+- 简言之：化地方取名字
+
+- 命名空间关键字：`namespace`
+
+  ```c++
+  namespace A {
+      int x = 0;
+      void f1();
+      void f2();
+  }
+  cout << A::x <<  endl;
+  A::f1();
+  ```
+
+### 引用类型
+
+- 引用怎么用
+  - 引用作为参数的时候可以不用初始化
+  - 局部变量不能当引用使用
+
+- 在计算机中，引用就是变量的别名
+
+- 声明一个变量引用时，必须初始化（有小名必须有大名）
+
+  ```c++
+  //普通数据类型的引用
+  int a = 3;
+  int &b = a;
+  b = 10;
+  cout  << a << endl; // 10
+  ```
+
+- 结构体类型的引用（类比c语言）
+
+  ```c++
+  typedef struct {
+      int x;
+      int y;
+  } Coor;
+  
+  int main() {
+      Coor c1;
+      Coor &c = c1;
+      c.x = 10;
+      c.y = 20;
+      cout << c1.x <<" "<< c1.y; //10 20
+      return 0;
+  }
+  ```
+
+- **指针类型的引用**
+
+  `类型　*&指针引用名 = 指针;`　
+
+  ```c++
+  int main() {
+      int a = 10;
+      int *p = &a;
+      int *&q = p;
+      *q = 20;
+      cout << a << endl; //20
+      return 0;
+  }
+  ```
+
+- 引用作为函数参数
+
+  ```c++
+  //c语言
+  void func(int *a, int *b) {
+      int c = 0;
+      c = *a;
+      *a = *b;
+      *b = c;
+  }
+  int main() {
+  	int x = 10, y = 20;
+  	func(&x, &y);
+      return 0;
+  }
+  /****************************************/
+  //C++引用
+  void func(int &a, int &b) {
+      int c = 0;
+      c = a;
+      a = b;
+      b = c;
+  }
+  int main() {
+      int x = 10, y = 20;
+  	func(x, y);
+      return 0;
+  }
+  ```
+
+  
+
+### 类和对象
 
 - 类的定义
 
@@ -108,6 +214,7 @@ class TV {
         像素配色；
 }；
 ```
+
 - 实例化对象/对象成员的访问
 
   ```c++
@@ -210,6 +317,46 @@ class TV {
 
 - 做工程先画UML图
 
+- 类与对象
+
+  ```c++
+  #include <isotream>
+  using std::cin;
+  using std::cout;
+  using std::endl;
+  class Test {
+      private:
+          int i;
+      	int j;
+      public:
+      	int a;
+      	int getI() {
+          	return i;
+      	}
+      	int getJ() {
+          	return j;
+      	}	
+      	int getA() {
+          	return a;
+      	}
+      	void setI(int value) {
+          	i = value;
+          	return ;
+      	}
+  };
+  int main() {
+      Test t;
+      Test *t1 = new Test;
+      t.a = 5;
+      t1->a = 10;
+      cout << t.getI() << endl;
+      cout << t.a　<< " " << t1->a << endl; 
+      return 0;
+  }
+  ```
+
+  - 访问修改类里面的对象时要通过成员函数去做
+
 ## 内联函数
 
 - 关键字：`inline`
@@ -270,150 +417,135 @@ inline void func() {
   - 有且仅有一次
   - 根据条件进行初始化
 
-
 ## 数据类型的加强
 
-- 在c语言中有没有真正的常量
+1. 在c语言中有没有真正的常量
+   - 枚举类型才是真正的常量
+   - **const叫只读变量**
+2. 怎么改变const的值
 
-  - 枚举类型才是真正的常量
+```c++
+#include <stdio.h>
 
-  - **const叫只读变量**
+int main() {
+    const int a = 5;
+    //a = 6; 会提示不能修改
+    //const是个只读变量 用指针就可以修改
+    int *p = (int *)&a;
+    *p = 6;
+    printf("%d, %d \n", a, *p);
+    return 0;
+}
+//gcc编译结果是6, 6
+//g++编译结果是5, 6
+//const 在c++中 例如const int a = 5;
+/*c++*/
+#include<iostream>
+#include<cstdio>
+int main() {
+    const int a = 5;
+    int *p = (int *)&a;
+    *p = 6;
+    printf("%d, %d\n", a, *p);
+    return 0;
+}
+//
+```
 
-    - 怎么改变const的值
+**c++**中**const**修饰的变量就是真正的常量 
 
-    - ```c
-      #include <stdio.h>
-      
-      int main() {
-          const int a = 5;
-          //a = 6; 会提示不能修改
-          //const是个只读变量 用指针就可以修改
-          int *p = (int *)&a;
-          *p = 6;
-          printf("%d, %d \n", a, *p);
-          return 0;
-      }
-      //gcc编译结果是6, 6
-      //g++编译结果是5, 6
-      //const 在c++中 例如const int a = 5;
-      /*c++*/
-      #include<iostream>
-      #include<cstdio>
-      int main() {
-          const int a = 5;
-          int *p = (int *)&a;
-          *p = 6;
-          printf("%d, %d\n", a, *p);
-          return 0;
-      }
-      //g++
-      
-      ```
+**const 有作用域 有类型检查**
 
-    - **c++**中**const**修饰的变量就是真正的常量 
-
-      - const 有作用域 有类型检查
-
-    - ```c++
-      #include <iostream>
-      #include <cstdio>
-      using namespace std;
-      
-      int main() {
-          const int A = 5;
-          const int B = 6;
-          int array[A + B] = {0};
-          return 0;
-      }
-      //c++不会有问题 c程序会出错
-      
-      ```
-
-      ```c++
-      #include <iostream>
-      #include <cstdio>
-      void f() {
-          #define N 100
-          const int A = 100；
-      }
-      void g() {
-          //printf("%d, %d\n", N, A);
-          printf("%d\n", N);
-      }
-      int main() {
-          g();
-          f();
-          return 0;
-      }
-      ```
-
-  ### 布尔类型
-
-  - 非零即是true
-
-  - ```c++
-    #include <iostream>
+```c++
+    #include <iostream> 
+    #include <cstdio>
     using namespace std;
-    int main(de) {
-        int a = 5;
-        bool b = false;
-        cout << sizeof(b) << endl;//1
-        cout << a << " " << b << endl;//5 0
-        b++;
-        cout << a << " " << b << endl;//5 1
-        a = b + a;
-        cout << a << " " << b << endl;//6 1
-        return 0；
-    }//在c++中 
-    ```
 
-  - ```c++
-    #include <iostream>
-    using namespace std;
     int main() {
-        int a = 1, b = 2;
-        (a > b ? a : b) = 3;//c会报错 c++不会
-        cout << a << " " << b << endl;
-        return 0;
+	    const int A = 5;
+	    const int B = 6;
+    	int array[A + B] = {0};
+    	return 0;
     }
-    //c语言的三目运算符不能当左值 c++可以
-    //c++中的三目运算符 返回一个变量的引用
-    //如果换成（a > b ? a : 1） = 3 会报错 必须全是变量
-    ```
+//c+C++不会有问题 c程序会出错
+```
 
-  - 声明一个变量引用时，必须初始化
+```c++
+#include <iostream>
+#include <cstdio>
+void f() {
+    #define N 100
+    const int A = 100；
+}
+void g() {
+    //printf("%d, %d\n", N, A);
+    printf("%d\n", N);
+}
+int main() {
+    g();
+    f();
+    return 0;
+}
+}
+```
 
-    - ```c
+### 布尔类型
+
+- C++中提供了逻辑bool类型，真值为true,假值为false，c中没有（用int类型的０和非０来实现）
+
+- 非零即是true
+
+  ```c++
+  #include <iostream>
+  using namespace std;
+  int main(de) {
       int a = 5;
-      int &b = a;
-      ```
+      bool b = false;
+      cout << sizeof(b) << endl;//1
+      cout << a << " " << b << endl;//5 0
+      b++;
+      cout << a << " " << b << endl;//5 1
+      a = b + a;
+      cout << a << " " << b << endl;//6 1
+      return 0；
+  }//在c++中 
+  ```
 
-  - 引用怎么用
-
-    - 引用作为参数的时候可以不用初始化
-    - 局部变量不能当引用使用
+  ```c++
+  #include <iostream>
+  using namespace std;
+  int main() {
+      int a = 1, b = 2;
+      (a > b ? a : b) = 3;//c会报错 c++不会
+      cout << a << " " << b << endl;
+      return 0;
+  }
+  //c语言的三目运算符不能当左值 c++可以
+  //c++中的三目运算符 返回一个变量的引用
+  //如果换成（a > b ? a : 1） = 3 会报错 必须全是变量
+  ```
 
 - c语言中函数的参数不能有默认值 C++可以
 
-  - 函数声明时可以带默认值 实现不能代 
+- 函数声明时可以带默认值 实现不能代 ，有默认参数值的参数必须在参数表的最右端
 
-    ```c++
-    #include <iostream>???
-    using namespace std;
-    int add(int a = 3, int b = 5);
-    int main() {
-        int a = 6, b = 5;
-        cout << add() << endl;
-        return 0;
-    }
-    int add(int a = 9, int b = 0) {
-        return a + b;
-    }
-    ```
+  ```c++
+  #include <iostream>???
+  using namespace std;
+  int add(int a = 3, int b = 5);
+  int main() {
+      int a = 6, b = 5;
+      cout << add() << endl;
+      return 0;
+  }
+  int add(int a = 9, int b = 0) {
+      return a + b;
+  }
+  ```
 
-  - 函数的占位参数（只有类型没有实参）
+- 函数的占位参数（只有类型没有实参）
 
-  ## 函数重载
+## 函数重载
 
 - 函数重载的规则(c不允许函数重载)
 
@@ -460,7 +592,7 @@ inline void func() {
 
 - 主函数调用我们自己定义的函数时，会把实参传给一个形参类型和该实参相对应的函数，这个参数传递的过程，实际上是一个形参和实参相结合的过程，简称形实结合
 
-- ```c++
+  ```c++
   int i,j;
   int &ri=i;//建立一个int类型的引用ri，并将其初始化为i的一个别名
   j=10；
@@ -496,7 +628,7 @@ inline void func() {
 
 
 
-## new/delete两个关键字
+## new/delete
 
 - new/delete
 
@@ -511,64 +643,9 @@ inline void func() {
 
 - 不能用局部变量返回引用
 
-- 命名空间的嵌套
+- 
 
-  ```c++
-  #include <iostream>
-  
-  ```
-
-- 类与对象
-
-  - 访问权限
-
-    - public(公共访问权限)
-
-    - private(私有的访问权限)
-
-    - protected(受保护的访问权限)
-
-      ```c++
-      #include <isotream>
-      using std::cin;
-      using std::cout;
-      using std::endl;
-      class Test {
-          private:
-              int i;
-          	int j;
-          public:
-          	int a;
-          	int getI() {
-              	return i;
-          	}
-          	int getJ() {
-              	return j;
-          	}	
-          	int getA() {
-              	return a;
-          	}
-          	void setI(int value) {
-              	i = value;
-              	return ;
-          	}
-      };
-      int main() {
-          Test t;
-          Test *t1 = new Test;
-          t.a = 5;
-          t1->a = 10;
-          cout << t.getI() << endl;
-          cout << t.a　<< " " << t1->a << endl; 
-          return 0;
-      }
-      ```
-
-      
-
-  - 访问修改类里面的对象时要通过　去做
-
-  ### 构造函数
+  ## 构造函数
 
   - 在对象实例化时被自动调用（一次）
 
@@ -592,7 +669,6 @@ inline void func() {
   - **当用户没有定义构造函数时，编译器自动生成一个构造函数**
   - 使用无参的构造函数不能写成`Test t3();`会被当做函数声明，要写成`Test t3;`
   - 当一个类是空类的时候，编译器会默认提供１个无参的构造函数
-
   - 构造函数的手动调用
 
 - ```c++
@@ -665,6 +741,21 @@ inline void func() {
 
 - 必须使用初始化列表来初始化
 
+- 构造函数初始化列表
+
+  ```c++
+  class Student {
+    public:
+          Student():m_strName("jim"), m_iAge(10){
+          }
+      private:
+          string m_strName;
+      	int m_iAge;
+  };
+  ```
+
+  
+
   - const 成员属性（真正常量/readonly?）
   - 类属性（类里有带参）
   - 注意事项：
@@ -678,21 +769,62 @@ inline void func() {
 
 - 先父母再朋友再自己，析构顺序与构造顺序相反
 
-- static 
+### 构造函数总结
 
+- **构造函数**：
+
+  - 无参构造函数（默认构造函数）
+  - 有参构造函数
+    - 参数带默认值（所有参数都设置默认值——默认构造函数）
+    - 参数无默认值
+
+- 系统自动生成的函数:(如果我们手动定义了　系统就不会再生成)
+
+  - 普通构造函数
+  - 拷贝构造函数(不可以重载　没有返回值)
+
+- > 初始化类列表必须在普通构造函数/拷贝构造函数的后边
+  >
+  > 用const修饰的常量只能使用初始化列表来初始化
+
+## 析构函数
+
+- 如果没有自定义的析构函数则系统自动生成
+- 析构函数在对象销毁时自动调用
+- 析构函数没有返回值，没有参数也不能重载
+
+1. 定义格式：`~类名（）`
+
+   ```c++
+   class Student {
+       public:
+       Student() {
+           cout << "Student" << endl;
+       }
+       ~Student() {
+           cout << "~Student" << endl;
+       }
+       private:
+       	string m_strName;
+   };
+   ```
+
+2. 格式上不允许定义参数，也就不可能被重载
+
+#### 对象的生命历程
+
+申请内存——初始化列表——构造函数——参与运算——析构函数——释放内存　
+
+- static 
   - 属于整个类　
   - 生命周期是整个程序　
   - 可以通过类名直接访问公有的静态成员变量
   - 所有对象都共享
   - 静态成员变量访问级别
-
 - 静态成员方法的特性
-
   - 不依赖对象去访问属性
   - 静态成员函数不能直接访问成员变量
-
 - 对象内存中存储方式
-
   - 对象
     - 属性　程序中要改变
     - 方法（函数）程序中不需要变得
@@ -700,9 +832,52 @@ inline void func() {
     - hanshuthis指针是某一个对象的地址（静态成员函数无this）
     - 构造函数也是成员函数有this指针
 
-- const对象的性质
+## const关键字
 
-- 
+- const与基本数据类型
+
+  `int x = 3;//变量`
+
+  `const int x = 3; //常量　不可更改`
+
+- const与指针类型
+
+  `const int *p = NULL;`与
+
+  `int const *p = NULL;`完全等价
+
+  `const int * Sconst p = NULL;`与
+
+  `int const * const p = NULL;`完全等价
+
+  ```c++
+  	int x = 3;
+  	const int *p = &x;
+  	p = &y;//正确
+  	*p = 4;//错误　const修饰的是*p
+  
+  	int x = 3;
+  	int *const p = &x;
+  	p = &y;//错误　const修饰的Ｐ只能指向ｘ
+  
+  	const int x = 3;
+  	const int *const p = &x;
+  	p = &y;//错误
+  	*p = 4;//错误
+  ```
+
+- const与引用
+
+  ```c++
+  	int x = 2;
+  	const int &y = x;
+  	x = 10;//正确
+  	y = 20;//错误
+  ```
+
+  `const int x = 3; int *y = &x; //编译器禁止通过指针改变const常量`
+
+- const对象的性质
 
   - const classname 变量名
   - 只读对象（里面的属性都是只读的　不能当左值用）
@@ -720,17 +895,11 @@ inline void func() {
   - const成员函数，内部只能调用const方法
   - const成员函数中不能更改变量的值
 
-- 继承就是为了代码复用
+#### 继承就是为了代码复用
 
 - 返回值优化
 
   ```c++
-  	> File Name: 0108.cpp
-  	> Author: Zoe 
-  	> Mail: 
-  	> Created Time: 2019年01月08日 星期二 18时13分45秒
-   ************************************************************************/
-  
   #include <iostream>
   using std::cin;
   using std::cout;
@@ -765,8 +934,6 @@ inline void func() {
   
   ```
 
-  
-
 - 函数形参额初始化
 
 `g++ test.cpp -fno-elide-constructors//默认开着返回值优化 执行此命令关掉`
@@ -778,7 +945,6 @@ inline void func() {
 - 组合关系：
 
   - 类的对象被当做类的属性
-
   - 其他类的生命周期与当前类对象相同
   - 成员对象在用法上与普通成员相同
 
@@ -801,17 +967,21 @@ inline void func() {
 
 子类从父类中继承过来的属性方法访问权限（竖列）
 
-![](/home/zoe/截图/c++/继承中子类的访问权限.png)
+![](/home/zoe/%E6%88%AA%E5%9B%BE/c++/%E7%BB%A7%E6%89%BF%E4%B8%AD%E5%AD%90%E7%B1%BB%E7%9A%84%E8%AE%BF%E9%97%AE%E6%9D%83%E9%99%90.png)
 
 ```c++
 
 ```
 
 - 默认调用方式：
-  - 要求父类构造函数必是无参或者是带默认参数的构造函数
+
+  要求父类构造函数必是无参或者是带默认参数的构造函数
+
 - 继承的构造顺序：
-  - 先去自动/手动调用父类的构造函数（必须有匹配的）
-  - 再调用子类构造函数（构造函数调用的口诀：先父亲 再朋友 最后自己（可以递归使用））
+
+  先去自动/手动调用父类的构造函数（必须有匹配的）
+
+  再调用子类构造函数（构造函数调用的口诀：先父亲 再朋友 最后自己（可以递归使用））
 
 1.子类对象构造时，需要先初始化父类各属性（需要调用父类构造函数）
 
@@ -827,10 +997,6 @@ inline void func() {
 
 父子间同名冲突：子类与父类定义了相同名字的属性和方法（认为你想优先使用新定义的方法或者属性，自动的把父类的同名属性和方法隐藏）
 
-
-
-- 
-
 - 子类和父类同名方法不构成重载关系（重写）
 - 子类中定义父类中完全相反的函数
 - 使用作用域分辨符区访问同名成员和方法
@@ -845,7 +1011,7 @@ inline void func() {
 
 父子兼容
 
--  子类是
+- 子类是
 - 父类对象指针可以指向子类对象
 - 父类对象的引用可以引用子类对象
 
@@ -874,7 +1040,9 @@ inline void func() {
 
 - 多态：面向对象概念：不同的对象产生不同的行为
 
-- ```c++
+  
+
+  ```c++
   //多态用法
   #include <iostream>
   #include <cstdio>
@@ -915,8 +1083,6 @@ inline void func() {
   
   ```
 
-- 
-
 - 多态行为：根据实际对象调用重写函数 当指向父类对象时，调用父类对象函数，指向子类对象时，调用子类重写父类中同名函数
 
 - c++支持多态的关键字是：virtual
@@ -925,7 +1091,13 @@ inline void func() {
 
 - 虚函数->特殊的一个叫纯虚函数->含有纯虚函数的类叫？？？？
 
-- 多态的意义：1.在程序中表现出动态的特性 2.在子类中重写的父类同名函数必须声明成虚函数，否则没有意义。3.多态是面向对象的基础
+- 多态的意义：
+
+  1.在程序中表现出动态的特性 
+
+  2.在子类中重写的父类同名函数必须声明成虚函数，否则没有意义
+
+  3.多态是面向对象的基础
 
 - 静态联编：程序在编译器件就知道调用哪个函数（函数重载）
 
@@ -1065,5 +1237,21 @@ int main() {
 
 优先看自？？？
 
+编译器支持模板函数和普通函数构成重载函数
+
+**不同函数的调用顺序：优先调用普通函数　然后模板函数　最后变参函数**
+
 ### 类模板
 
+怎么判断一个变量是指针类型还是普通类型
+
+不同的数据类型对数据进行操作
+
+1. 类模板的用法`template <typename T>`
+2. 系统不支持string类型相减　可以相加
+3. 定义与声明不能分开写，会链接错误
+
+类模板：
+
+1. 当在类外实现成员函数时，返回值　class_nam?e<T>函数名　参数列表　函数体
+2. **类模板的声明跟实现在同一个头文件中**　
