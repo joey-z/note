@@ -1452,3 +1452,54 @@ class Test {
 非要重载要重载成全局函数
 
 参数传const引用　返回值、、、
+
+### 内存管理
+
+1. 内存的本质是资源，掌管内存资源的是操作系统，我们能做的就是申请和归还。
+2. 申请归还内存资源就是内存管理。
+
+#### **内存的申请和释放**
+
+申请内存new 释放内存delete (new/delete 是运算符不是关键字)
+
+- 申请和释放内存的方法：`int *p = new int ;` `delete p;`
+- 申请和释放块内存：`int *arr = new int[10]; //申请块内存`　`delete []arr; //释放内存`
+
+内存操作注意事项：
+
+C语言中：`void *malloc(size_t size);` `void free(void *memeblock);`
+
+C++中：`new  delete`
+
+**注意：配套使用，不可混搭**
+
+申请内存的注意事项：
+
+```c++
+int *p = new int[1000];
+if (NULL == p) {
+    //内存分配失败
+}
+```
+
+释放内存的注意事项：
+
+```c++
+int *p = new int;
+if (NULL == p) {
+    //内存分配失败
+	//异常处理    
+}
+delete p;
+p = NULL;
+
+int *p = new int[1000];
+if (NULL == p) {
+    //内存分配失败
+    //异常处理
+}
+delete p;
+p = NULL;//避免许多不必要的错误
+//如果不赋值为空，如果我们不小心又用调用了一次delete　就是的同一块内存被释放两次　计算机会出现异常
+```
+
